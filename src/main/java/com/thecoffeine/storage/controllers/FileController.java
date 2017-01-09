@@ -8,7 +8,6 @@
 
 package com.thecoffeine.storage.controllers;
 
-import com.mongodb.gridfs.GridFSFile;
 import com.thecoffeine.storage.models.entities.File;
 import com.thecoffeine.storage.models.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.springframework.util.Assert.notNull;
@@ -42,21 +38,25 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+
+    /**
+     * Get list of files per page.
+     *
+     * @return
+     */
     @RequestMapping( method = RequestMethod.GET )
     public List<File> listAction() {
-        return this.fileService.findAll().stream()
-            .map((gridFSFile) -> new File(
-                "" + gridFSFile.getId(),
-                gridFSFile.getFilename(),
-                gridFSFile.getContentType(),
-                gridFSFile.getLength(),
-                gridFSFile.getChunkSize(),
-                OffsetDateTime.ofInstant( gridFSFile.getUploadDate().toInstant(), ZoneId.systemDefault() ),
-                gridFSFile.getMD5()
-            ))
-            .collect( Collectors.toList()    );
+        return this.fileService.findAll();
     }
 
+    /**
+     * Create a new file(Upload).
+     *
+     * @param file        File data.
+     * @param response    Http response.
+     *
+     * @return Created file.
+     */
     @RequestMapping( method = RequestMethod.POST )
     @ResponseBody
     public File createAction(
@@ -69,16 +69,7 @@ public class FileController {
             //- Set successful HTTP status -//
             response.setStatus( HttpServletResponse.SC_CREATED );
             //- Store file -//
-            final GridFSFile gridFSFile = this.fileService.create( file );
-            return new File(
-                "" + gridFSFile.getId(),
-                gridFSFile.getFilename(),
-                gridFSFile.getContentType(),
-                gridFSFile.getLength(),
-                gridFSFile.getChunkSize(),
-                OffsetDateTime.ofInstant( gridFSFile.getUploadDate().toInstant(), ZoneId.systemDefault() ),
-                gridFSFile.getMD5()
-            );
+            return this.fileService.create( file );
         } catch ( IOException e ) {
             //- Error: cannot read input file -//
             response.setStatus( HttpServletResponse.SC_BAD_REQUEST );
@@ -87,7 +78,16 @@ public class FileController {
         return null;
     }
 
+    /**
+     * Get file by name.
+     *
+     * @param name        File's name.
+     * @param response    HTTP response.
+     *
+     * @return Original file.
+     */
     @RequestMapping( path = "/{name:.+}", method = RequestMethod.GET )
+    @ResponseBody
     public byte[] readAction(
         @PathVariable( "name" )
         String name,
@@ -103,12 +103,61 @@ public class FileController {
 
             //- Prepare response -//
             response.addHeader( HttpHeaders.CONTENT_TYPE, file.getContentType() );
-        } catch ( IllegalArgumentException e ) {
-            response.setStatus( HttpServletResponse.SC_NOT_FOUND );
-        } catch ( IOException e ) {
 
+            return file.getContent();
+        } catch (
+            IllegalArgumentException
+            | NullPointerException
+            | IOException e
+        ) {
+            //- Error: cannot find file or content -//
+            response.setStatus( HttpServletResponse.SC_NOT_FOUND );
         }
 
         return null;
+    }
+
+    /**
+     * Delete file by name.
+     *
+     * @param name        File's name.
+     * @param response    HTTP response.
+     */
+    @RequestMapping( path = "/{name:[\\w\\.\\_\\-]+}", method = RequestMethod.DELETE )
+    public void deleteAction(
+        @PathVariable( "name" )
+        String name,
+
+        HttpServletResponse response
+    ) {
+        try {
+            //- Delete file -//
+            this.fileService.delete( name );
+        } catch ( Exception e ) {
+            //- Error: cannot delete this file -//
+            response.setStatus( HttpServletResponse.SC_NOT_FOUND );
+        }
+    }
+
+    /**
+     * Delete file by id.
+     *
+     * @param id        File's name.
+     * @param response    HTTP response.
+     */
+    @RequestMapping( path = "/{id:\\w+}", method = RequestMethod.DELETE )
+    public void deleteAction(
+        @PathVariable( "id" )
+        Object id,
+
+        HttpServletResponse response
+    ) {
+        try {
+            //- Delete file -//
+            this.fileService.delete( id );
+        } catch ( Exception e ) {
+            //- Error: cannot delete this file -//
+            response.setStatus( HttpServletResponse.SC_NOT_FOUND );
+        }
     }
 }

@@ -9,10 +9,11 @@
 package com.thecoffeine.storage.models.services.implementations;
 
 import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.gridfs.GridFSFile;
 import com.thecoffeine.storage.models.entities.File;
 import com.thecoffeine.storage.models.services.FileService;
+import com.thecoffeine.storage.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsCriteria;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
@@ -21,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,23 +44,27 @@ public class FileServiceImpl implements FileService {
      * @return List of files.
      */
     @Override
-    public List<GridFSDBFile> findAll() {
+    public List<File> findAll() {
         return this.gridFsTemplate.find( null )
             .stream()
+            .map((gridFSFile) -> FileUtil.gridFSDBFileToFile( gridFSFile ))
             .collect( Collectors.toList() );
     }
 
     /**
-     * Create a new File.
+     * Create a new File(Upload).
      *
      * @return Created file.
      */
     @Override
-    public GridFSFile create( MultipartFile file ) throws IOException {
-        return this.gridFsTemplate.store(
-            file.getInputStream(),
-            file.getOriginalFilename(),
-            file.getContentType()
+    public File create( MultipartFile file ) throws IOException {
+        //- Store file -//
+        return FileUtil.gridFSDBFileToFile(
+            this.gridFsTemplate.store(
+                file.getInputStream(),
+                file.getOriginalFilename(),
+                file.getContentType()
+            )
         );
     }
 
@@ -74,25 +77,52 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public File find( String fileName ) throws IOException {
-        final GridFSDBFile file = this.gridFsTemplate.findOne(
-            Query.query( GridFsCriteria.whereFilename().is( fileName ) )
+        //- Find file -//
+        final GridFSDBFile gridFSDBFile = this.gridFsTemplate.findOne(
+            Query.query(
+                GridFsCriteria.whereFilename().is( fileName )
+            )
         );
 
-        final File f = new File(
-            "" + file.getId(),
-            file.getFilename(),
-            file.getContentType(),
-            file.getLength(),
-            file.getChunkSize(),
-            OffsetDateTime.ofInstant( file.getUploadDate().toInstant(), ZoneId.systemDefault() ),
-            file.getMD5()
-        );
+        //- Convert to File -//
+        final File file = FileUtil.gridFSDBFileToFile( gridFSDBFile );
 
+        //- Create buffer -//
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        file.writeTo( os );
-        f.setContent( os.toByteArray() );//TODO: code stype
+        //- Write content into buffer -//
+        gridFSDBFile.writeTo( os );
 
+        //- Set content into file -//
+        file.setContent( os.toByteArray() );
 
-        return f;
+        return file;
+    }
+
+    /**
+     * Delete file by name.
+     *
+     * @param name File's name.
+     */
+    @Override
+    public void delete( String name ) {
+        this.gridFsTemplate.delete(
+            Query.query(
+                GridFsCriteria.whereFilename().is( name )
+            )
+        );
+    }
+
+    /**
+     * Delete file by id.
+     *
+     * @param id File's id.
+     */
+    @Override
+    public void delete( Object id ) {
+        this.gridFsTemplate.delete(
+            new Query(
+                Criteria.where( "_id" ).is( id )
+            )
+        );
     }
 }

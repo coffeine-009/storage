@@ -8,8 +8,6 @@
 
 package com.thecoffeine.storage.models.services;
 
-import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.gridfs.GridFSFile;
 import com.thecoffeine.storage.models.entities.File;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +26,7 @@ public interface FileService {
      *
      * @return List of files.
      */
-    List<GridFSDBFile> findAll();
+    List<File> findAll();
 
     /**
      * Create a new File.
@@ -37,7 +35,7 @@ public interface FileService {
      *
      * @throws IOException if cannot read input file.
      */
-    GridFSFile create( MultipartFile file ) throws IOException;
+    File create( MultipartFile file ) throws IOException;
 
     /**
      * Find file by name.
@@ -47,4 +45,18 @@ public interface FileService {
      * @return File.
      */
     File find( String fileName ) throws IOException;
+
+    /**
+     * Delete file by name.
+     *
+     * @param name    File's name.
+     */
+    void delete( String name );
+
+    /**
+     * Delete file by id.
+     *
+     * @param id    File's id.
+     */
+    void delete( Object id );
 }
