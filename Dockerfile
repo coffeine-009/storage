@@ -10,6 +10,9 @@ RUN mkdir /opt/storage
 #- Copy sources -#
 COPY . /opt/storage
 
+# Define dafault value of DB host
+ENV DB_HOST localhost
+
 #- Set up work dir -#
 WORKDIR /opt/storage
 

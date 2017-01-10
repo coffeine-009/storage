@@ -1,0 +1,21 @@
+---
+##
+# Configuration of docker compose.
+# Link and run related images.
+#
+
+#- REST API server -#
+storage:
+  image: coffeine/storage
+  environment:
+    DB_HOST: mongodb
+  ports:
+    - 8080:8080
+  links:
+    - mongodb
+
+#- Database -#
+mongodb:
+  image: mongo:3.4
+  volumes:
+    - local_mongo:/data/db
