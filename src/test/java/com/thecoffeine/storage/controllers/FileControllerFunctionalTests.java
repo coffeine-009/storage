@@ -12,6 +12,7 @@ import com.thecoffeine.storage.AbstractTests;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -34,6 +35,7 @@ public class FileControllerFunctionalTests extends AbstractTests {
         )
             .andExpect( status().isOk() )
             .andExpect( content().contentType("application/json;charset=UTF-8") )
+            .andDo( document( "list-files" ) )
             .andDo( print() );
     }
 }

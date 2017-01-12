@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @RunWith( SpringRunner.class )
 @SpringBootTest
-@ContextConfiguration( classes = { StorageConfigTest.class } )
+@ContextConfiguration( classes = { StorageApplication.class, StorageConfigTest.class } )
 public abstract class AbstractTests {
 
     @Autowired

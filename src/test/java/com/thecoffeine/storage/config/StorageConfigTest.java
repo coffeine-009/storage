@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
 /**
  * Configuration of embed mongo.
@@ -30,6 +31,11 @@ public class StorageConfigTest extends AbstractMongoConfiguration {
     @Autowired
     private Environment env;
 
+
+    @Bean
+    public GridFsTemplate gridFsTemplate() throws Exception {
+        return new GridFsTemplate( this.mongoDbFactory(), this.mappingMongoConverter() );
+    }
 
     /**
      * Return the name of the database to connect to.
