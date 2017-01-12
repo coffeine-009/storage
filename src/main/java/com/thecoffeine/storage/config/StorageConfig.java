@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
  *
  * @version 1.0
  */
+@Profile( "default" )
 @Configuration
 public class StorageConfig extends AbstractMongoConfiguration {
 

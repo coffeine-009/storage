@@ -19,6 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Locale;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -50,6 +52,7 @@ public class FileControllerTests {
         this.mockMvc.perform(
             get( "/files" )
                 .accept( MediaType.parseMediaType("application/json;charset=UTF-8"))
+                .locale( Locale.ENGLISH )
         )
             .andExpect( status().isOk() )
             .andExpect( content().contentType("application/json;charset=UTF-8") );
