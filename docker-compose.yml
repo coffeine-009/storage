@@ -4,18 +4,48 @@
 # Link and run related images.
 #
 
-#- REST API server -#
-storage:
-  image: coffeine/storage
-  environment:
-    DB_HOST: mongodb
-  ports:
-    - 8080:8080
-  links:
-    - mongodb
+version: '2'
 
-#- Database -#
-mongodb:
-  image: mongo:3.4
-  volumes:
-    - local_mongo:/data/db
+services:
+  #- REST API server -#
+  storage:
+    image: coffeine/storage
+    environment:
+      DB_HOST: mongodb
+    ports:
+      - 8080:8080
+    links:
+      - mongodb
+
+  #- Database -#
+  #- ReplicaSet :: Primary -#
+  mongodb:
+    image: coffeine/mongo
+    ports:
+      - 27017
+    volumes:
+      - mongo:/data/db
+    command: mongod --auth --keyFile /tmp/keyfile --replSet music-files
+
+  #- ReplicaSet :: Secondary1 -#
+  mongodb1:
+    image: coffeine/mongo
+    ports:
+      - 27017
+    volumes:
+      - mongo_1:/data/db
+    command: mongod --auth --keyFile /tmp/keyfile --replSet music-files
+
+  #- ReplicaSet :: Secondary2 -#
+  mongodb2:
+    image: coffeine/mongo
+    ports:
+      - 27017
+    volumes:
+      - mongo_2:/data/db
+    command: mongod --auth --keyFile ./tmp/keyfile --replSet music-files
+
+volumes:
+  mongo:
+  mongo_1:
+  mongo_2:
