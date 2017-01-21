@@ -10,10 +10,6 @@ package com.thecoffeine.storage.utils;
 
 import org.junit.Test;
 
-import java.lang.reflect.Modifier;
-
-import static org.junit.Assert.assertTrue;
-
 /**
  * Tests of {@link FileUtil}
  *
@@ -25,15 +21,8 @@ public class FileUtilTests {
     /**
      * Check if util class is abstract.
      */
-    @Test
-    public void testNoInstances() {
-        //- Trick for cobertura -//
-        new FileUtil() {};//FIXME: remove if cobertura can handle this.
-
-        //- Real check -//
-        assertTrue(
-            "Util class has to be abstract",
-            Modifier.isAbstract( FileUtil.class.getModifiers() )
-        );
+    @Test( expected = InstantiationException.class)
+    public void testNoInstances() throws IllegalAccessException, InstantiationException {
+        FileUtil.class.newInstance();
     }
 }
