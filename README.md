@@ -30,20 +30,63 @@ Run all containers.
 docker-compose up
 ```
 
-#### Configure replication
+#### Sharding
+##### Config servers replica
 Connect to [primary] container.
 ```bash
-docker exec -it storage_mongodb_1 bash
+docker exec -it storage_mongodb_config_0_1 bash
 ```
 
-LogIn into via mongo client into admin database.
+Create replica set of config servers.
+```javascript
+rs.initiate( {
+   _id: "configSet",
+   configsvr: true,
+   members: [
+      { _id: 0, host: "mongodb_config_0:27019" },
+      { _id: 1, host: "mongodb_config_1:27019" },
+      { _id: 2, host: "mongodb_config_2:27019" }
+   ]
+} )
+```
+
+##### Configure replication for each cluster
+Connect to [primary] container.
 ```bash
+docker exec -it storage_mongodb_0_0_1 bash
+```
+
+Configure replica set.
+```javascript
+rs.initiate( {
+    "_id" : "music-notes",
+    "members" : [
+        {
+            "_id" : 0,
+            "host" : "mongodb_0_0:27018"
+        },
+        {
+            "_id" : 1,
+            "host" : "mongodb_0_1:27018"
+        },
+        {
+            "_id" : 2,
+            "host" : "mongodb_0_2:27018"
+        }
+    ]
+} )
+```
+
+##### Enable security
+LogIn into router via mongo client into admin database.
+```bash
+docker exec -it storage_mongodb_1 bash
 mongo admin
 ```
 
-Create admin user.
+###### Create admin user.
+_Note_: router servers, 
 
-_Note_: Be sure that container is runned without `--replSet` option.
 ```javascript
 db.createUser({
     user: 'root',
@@ -59,10 +102,9 @@ db.createUser({
         }
     ]
 })
-
-exit
 ```
 
+###### Create user for app
 Connect as admin.
 ```bash
 mongo -u "root" -p "toor" --authenticationDatabase "admin" storage
@@ -82,36 +124,16 @@ db.createUser({
 })
 ```
 
-##### Replica
-Restart mongod with replSet param. Connect as admin. Configure replica set.
+##### Add shards.
 ```javascript
-config = {
-    "_id" : "music-files",
-    "members" : [
-        {
-            "_id" : 0,
-            "host" : "mongodb:27017"
-        },
-        {
-            "_id" : 1,
-            "host" : "mongodb1:27017"
-        },
-        {
-            "_id" : 2,
-            "host" : "mongodb2:27017"
-        }
-    ]
-}
+sh.addShard( "music-notes/mongodb_0_0:27018,mongodb_0_1:27018,mongodb_0_2:27018" );
+sh.addShard( "music-files/mongodb_1_0:27018,mongodb_1_1:27018,mongodb_1_2:27018" );
+```
 
-rs.initiate(config)
-
-// Force primary selection to first node.
-cfg = rs.conf()
-cfg.members[0].priority = 1
-cfg.members[1].priority = 0.5
-cfg.members[2].priority = 0.5
-
-rs.reconf(cfg)
+##### Enable database sharding
+```javascript
+sh.enableSharding( "storage" )
+sh.shardCollection( "storage.fs.chunks", { files_id : 1, n : 1 } )
 ```
 
 
