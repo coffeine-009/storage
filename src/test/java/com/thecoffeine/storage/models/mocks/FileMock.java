@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2014-2017 by Coffeine Inc
  *
  * @author <a href = "mailto:vitaliy.tsutsman@musician-virtuoso.com>Vitaliy Tsutsman</a>
@@ -51,7 +51,11 @@ public abstract class FileMock {
         );
 
         //- Set content -//
-        file.setContent( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes( Charset.forName( "UTF-8" ) ) );
+        file.setContent(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes(
+                Charset.forName( "UTF-8" )
+            )
+        );
 
         return file;
     }

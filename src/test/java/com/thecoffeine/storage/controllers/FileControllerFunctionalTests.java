@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2014-2017 by Coffeine Inc
  *
  * @author <a href = "mailto:vitaliy.tsutsman@musician-virtuoso.com>Vitaliy Tsutsman</a>
@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -40,9 +39,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Functional tests for {@link FileController}.
- * @see FileController
  *
  * @version 1.0
+ * @see FileController
  */
 public class FileControllerFunctionalTests extends AbstractTests {
 
@@ -53,11 +52,15 @@ public class FileControllerFunctionalTests extends AbstractTests {
     /**
      * Prepare environment.
      *
-     * @throws FileNotFoundException
+     * @throws IOException  Cannot read/store file.
      */
     @Before
     public void setUp() throws IOException {
-        try (InputStream inputStream = new FileInputStream( "src/test/java/resources/MozartPianoSonata.xml" ) ) {
+        try (
+            InputStream inputStream = new FileInputStream(
+                "src/test/java/resources/MozartPianoSonata.xml"
+            )
+        ) {
             this.gridFsTemplate.store(
                 inputStream,
                 "MozartPianoSonata.xml",
@@ -65,7 +68,11 @@ public class FileControllerFunctionalTests extends AbstractTests {
             );
         }
 
-        try (InputStream is = new FileInputStream( "src/test/java/resources/MozartPianoSonata.xml" ) ) {
+        try (
+            InputStream is = new FileInputStream(
+                "src/test/java/resources/MozartPianoSonata.xml"
+            )
+        ) {
             this.gridFsTemplate.store(
                 is,
                 "Mozart.xml",
@@ -89,7 +96,7 @@ public class FileControllerFunctionalTests extends AbstractTests {
     /**
      * Test of getting list of files.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testListActionSuccess() throws Exception {
@@ -104,9 +111,25 @@ public class FileControllerFunctionalTests extends AbstractTests {
             .andExpect( jsonPath( "$", hasSize( 2 ) ) )
             .andExpect( jsonPath( "$[*].id", notNullValue() ) )
             .andExpect( jsonPath( "$[*].name", notNullValue() ) )
-            .andExpect( jsonPath( "$[*].name", containsInAnyOrder( "MozartPianoSonata.xml", "Mozart.xml" ) ) )
+            .andExpect(
+                jsonPath(
+                    "$[*].name",
+                    containsInAnyOrder(
+                        "MozartPianoSonata.xml",
+                        "Mozart.xml"
+                    )
+                )
+            )
             .andExpect( jsonPath( "$[*].contentType", notNullValue() ) )
-            .andExpect( jsonPath( "$[*].contentType", containsInAnyOrder( "application/xml", "application/xml" ) ) )
+            .andExpect(
+                jsonPath(
+                    "$[*].contentType",
+                    containsInAnyOrder(
+                        "application/xml",
+                        "application/xml"
+                    )
+                )
+            )
             .andExpect( jsonPath( "$[*].length", notNullValue() ) )
             .andExpect( jsonPath( "$[*].chunkSize", notNullValue() ) )
             .andExpect( jsonPath( "$[*].uploadDate", notNullValue() ) )
@@ -117,7 +140,7 @@ public class FileControllerFunctionalTests extends AbstractTests {
     /**
      * Test of getting list of files for unacceptable content type..
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testListActionFailure() throws Exception {
@@ -133,7 +156,7 @@ public class FileControllerFunctionalTests extends AbstractTests {
     /**
      * Test of getting file by name.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testFindActionSuccess() throws Exception {
@@ -151,7 +174,7 @@ public class FileControllerFunctionalTests extends AbstractTests {
     /**
      * Test of getting file by name.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testFindActionFailure() throws Exception {
@@ -167,12 +190,19 @@ public class FileControllerFunctionalTests extends AbstractTests {
     /**
      * Test of creating(uploading) file.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testCreateActionSuccess() throws Exception {
         //- Mock data -//
-        MockMultipartFile file = new MockMultipartFile( "file", "Jingle-Bells.xml", "application/xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes( Charset.forName( "UTF-8" ) ) );
+        MockMultipartFile file = new MockMultipartFile(
+            "file",
+            "Jingle-Bells.xml",
+            "application/xml",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes(
+                Charset.forName( "UTF-8" )
+            )
+        );
         //- Performing -//
         this.mockMvc.perform(
             fileUpload( "/files" )
@@ -195,13 +225,26 @@ public class FileControllerFunctionalTests extends AbstractTests {
                 document(
                     "file-create-success",
                     responseFields(
-                        fieldWithPath( "id" ).description( "Id of created(uploaded) file." ),
-                        fieldWithPath( "name" ).description( "Name of created(uploaded) file." ),
-                        fieldWithPath( "contentType" ).description( "ContentType of created(uploaded) file." ),
-                        fieldWithPath( "length" ).description( "Length of created(uploaded) file." ),
-                        fieldWithPath( "chunkSize" ).description( "chunkSize of created(uploaded) file." ),
-                        fieldWithPath( "uploadDate" ).description( "uploadDate of created(uploaded) file." ),
-                        fieldWithPath( "md5" ).description( "Md5 of created(uploaded) file." )
+                        fieldWithPath( "id" )
+                            .description( "Id of created(uploaded) file." ),
+
+                        fieldWithPath( "name" )
+                            .description( "Name of created(uploaded) file." ),
+
+                        fieldWithPath( "contentType" )
+                            .description( "ContentType of created(uploaded) file." ),
+
+                        fieldWithPath( "length" )
+                            .description( "Length of created(uploaded) file." ),
+
+                        fieldWithPath( "chunkSize" )
+                            .description( "chunkSize of created(uploaded) file." ),
+
+                        fieldWithPath( "uploadDate" )
+                            .description( "uploadDate of created(uploaded) file." ),
+
+                        fieldWithPath( "md5" )
+                            .description( "Md5 of created(uploaded) file." )
                     )
                 )
             );
@@ -210,7 +253,7 @@ public class FileControllerFunctionalTests extends AbstractTests {
     /**
      * Test of deleting file by name.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testDeleteActionSuccess() throws Exception {
@@ -225,7 +268,7 @@ public class FileControllerFunctionalTests extends AbstractTests {
     /**
      * Test of deleting file by name.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testDeleteActionFailure() throws Exception {
