@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2014-2017 by Coffeine Inc
  *
  * @author <a href = "mailto:vitaliy.tsutsman@musician-virtuoso.com>Vitaliy Tsutsman</a>
@@ -54,7 +54,7 @@ public class StorageConfigTest extends AbstractMongoConfiguration {
      *
      * @return Mongo client.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Override
     public Mongo mongo() throws Exception {

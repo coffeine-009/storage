@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2014-2017 by Coffeine Inc
  *
  * @author <a href = "mailto:vitaliy.tsutsman@musician-virtuoso.com>Vitaliy Tsutsman</a>
@@ -38,9 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Tests for {@link FileController}.
- * @see FileController
  *
  * @version 1.0
+ * @see FileController
  */
 @RunWith( SpringRunner.class )
 @WebMvcTest( FileController.class )
@@ -56,7 +56,7 @@ public class FileControllerTests {
     /**
      * Test of getting list of files.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testListActionSuccess() throws Exception {
@@ -76,7 +76,7 @@ public class FileControllerTests {
     /**
      * Test of getting list of files for unacceptable content type..
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testListActionFailure() throws Exception {
@@ -88,13 +88,13 @@ public class FileControllerTests {
             get( "/files" )
                 .accept( MediaType.parseMediaType("application/xml;charset=UTF-8"))
         )
-        .andExpect( status().isNotAcceptable() );
+            .andExpect( status().isNotAcceptable() );
     }
 
     /**
      * Test of creating(uploading) file.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testCreateActionSuccess() throws Exception {
@@ -103,10 +103,15 @@ public class FileControllerTests {
             "file",
             "Merry_Christmas.xml",
             "application/xml",
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes( Charset.forName( "UTF-8" ) )
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes(
+                Charset.forName( "UTF-8" )
+            )
         );
+
         //- Mocks -//
-        when( this.fileService.create( any( MultipartFile.class ) ) ).thenReturn( FileMock.getFile() );
+        when( this.fileService.create( any( MultipartFile.class ) ) )
+            .thenReturn( FileMock.getFile() );
+
         //- Performing -//
         this.mockMvc.perform(
             fileUpload( "/files" )
@@ -119,7 +124,7 @@ public class FileControllerTests {
     /**
      * Test of getting file by name.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testFindActionSuccess() throws Exception {
@@ -138,7 +143,7 @@ public class FileControllerTests {
      * Test of getting file by name.
      * File does not exist.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testFindActionFailure() throws Exception {
@@ -156,7 +161,7 @@ public class FileControllerTests {
     /**
      * Test of deleting file by name.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testDeleteActionSuccess() throws Exception {
@@ -174,12 +179,14 @@ public class FileControllerTests {
      * Test of deleting file by name.
      * File does not exist.
      *
-     * @throws Exception
+     * @throws Exception    General exception.
      */
     @Test
     public void testDeleteActionFailure() throws Exception {
         //- Mocks -//
-        doThrow( EmptyResultDataAccessException.class ).when( this.fileService ).delete( anyString() );
+        doThrow(
+            EmptyResultDataAccessException.class
+        ).when( this.fileService ).delete( anyString() );
 
         //- Performing -//
         this.mockMvc.perform(

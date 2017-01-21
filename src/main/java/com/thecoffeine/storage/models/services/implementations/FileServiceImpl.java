@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2014-2017 by Coffeine Inc
  *
  * @author <a href = "mailto:vitaliy.tsutsman@musician-virtuoso.com>Vitaliy Tsutsman</a>
@@ -47,7 +47,7 @@ public class FileServiceImpl implements FileService {
     public List<File> findAll() {
         return this.gridFsTemplate.find( null )
             .stream()
-            .map( ( gridFsFile ) -> FileUtil.gridFsDbFileToFile( gridFsFile ) )
+            .map( FileUtil::gridFsDbFileToFile )
             .collect( Collectors.toList() );
     }
 
