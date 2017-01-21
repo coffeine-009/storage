@@ -10,6 +10,7 @@ package com.thecoffeine.storage.models.mocks;
 
 import com.thecoffeine.storage.models.entities.File;
 
+import java.nio.charset.Charset;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,18 +23,36 @@ import java.util.stream.Stream;
  */
 public abstract class FileMock {
 
+    /**
+     * Get list of mocked files.
+     *
+     * @return List of files.
+     */
     public static List<File> getList() {
-        return Stream.of(
-            new File(
-                "id",
-                "test.xml",
-                "application/xml",
-                1024L,
-                8L,
-                OffsetDateTime.now(),
-                "ert435tertertr354"
-            )
-        )
+        return Stream.of( getFile() )
             .collect( Collectors.toList() );
+    }
+
+    /**
+     * Get mocked file.
+     *
+     * @return File.
+     */
+    public static File getFile() {
+        //- Create mock of file -//
+        final File file = new File(
+            "id",
+            "test.xml",
+            "application/xml",
+            1024L,
+            8L,
+            OffsetDateTime.now(),
+            "ert435tertertr354"
+        );
+
+        //- Set content -//
+        file.setContent( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes( Charset.forName( "UTF-8" ) ) );
+
+        return file;
     }
 }

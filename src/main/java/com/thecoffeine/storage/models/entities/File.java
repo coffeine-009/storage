@@ -170,7 +170,7 @@ public class File implements Serializable {
      * @return File's content.
      */
     public byte[] getContent() {
-        return content;
+        return content.clone();
     }
 
 
@@ -245,6 +245,6 @@ public class File implements Serializable {
      * @param content    File's bytes.
      */
     public void setContent( byte[] content ) {
-        this.content = content;
+        this.content = content.clone();
     }
 }

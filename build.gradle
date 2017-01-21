@@ -6,13 +6,20 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "net.saliman:gradle-cobertura-plugin:2.4.0"
+        classpath "de.aaschmid:gradle-cpd-plugin:1.0"
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'net.saliman.cobertura'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+apply plugin: "de.aaschmid.cpd"
+apply plugin: 'checkstyle'
 
 jar {
     baseName = 'storage'
@@ -21,10 +28,22 @@ jar {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+//- Tasks -//
+cobertura {
+    coverageFormats = [ 'xml', 'html' ]
+}
+
+cpdCheck {
+    source = [ sourceSets.main.allJava, sourceSets.test.allJava ]
+}
+
+checkstyle {
+    toolVersion = '6.12.1'
+}
+
 repositories {
     mavenCentral()
 }
-
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
