@@ -47,7 +47,7 @@ public class FileServiceImpl implements FileService {
     public List<File> findAll() {
         return this.gridFsTemplate.find( null )
             .stream()
-            .map((gridFSFile) -> FileUtil.gridFSDBFileToFile( gridFSFile ))
+            .map( ( gridFsFile ) -> FileUtil.gridFsDbFileToFile( gridFsFile ) )
             .collect( Collectors.toList() );
     }
 
@@ -59,7 +59,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public File create( MultipartFile file ) throws IOException {
         //- Store file -//
-        return FileUtil.gridFSDBFileToFile(
+        return FileUtil.gridFsDbFileToFile(
             this.gridFsTemplate.store(
                 file.getInputStream(),
                 file.getOriginalFilename(),
@@ -78,19 +78,19 @@ public class FileServiceImpl implements FileService {
     @Override
     public File find( String fileName ) throws IOException {
         //- Find file -//
-        final GridFSDBFile gridFSDBFile = this.gridFsTemplate.findOne(
+        final GridFSDBFile gridFsDbFile = this.gridFsTemplate.findOne(
             Query.query(
                 GridFsCriteria.whereFilename().is( fileName )
             )
         );
 
         //- Convert to File -//
-        final File file = FileUtil.gridFSDBFileToFile( gridFSDBFile );
+        final File file = FileUtil.gridFsDbFileToFile( gridFsDbFile );
 
         //- Create buffer -//
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         //- Write content into buffer -//
-        gridFSDBFile.writeTo( os );
+        gridFsDbFile.writeTo( os );
 
         //- Set content into file -//
         file.setContent( os.toByteArray() );

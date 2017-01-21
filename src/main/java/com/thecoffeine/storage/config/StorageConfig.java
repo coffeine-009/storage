@@ -58,6 +58,15 @@ public class StorageConfig extends AbstractMongoConfiguration {
     private char[] password;
 
 
+    /**
+     * Constructor to create storage config.
+     *
+     * @param host        Storage host.
+     * @param port        Storage port.
+     * @param database    Storage database name.
+     * @param username    Username to access.
+     * @param password    Password to access.
+     */
     public StorageConfig(
         @Value( "${spring.data.mongodb.host}" )
         String host,
@@ -78,9 +87,16 @@ public class StorageConfig extends AbstractMongoConfiguration {
         this.port = port;
         this.database = database;
         this.username = username;
-        this.password = password;
+        this.password = password.clone();
     }
 
+    /**
+     * GridFs template for working with mongodb's GridFs storage.
+     *
+     * @return GridFsTemplate.
+     *
+     * @throws Exception    Cannot create {@link GridFsTemplate}
+     */
     @Bean
     public GridFsTemplate gridFsTemplate() throws Exception {
         return new GridFsTemplate( this.mongoDbFactory(), this.mappingMongoConverter() );
@@ -103,7 +119,7 @@ public class StorageConfig extends AbstractMongoConfiguration {
      *
      * @return Mongo client.
      *
-     * @throws Exception
+     * @throws Exception    Cannot create {@link GridFsTemplate}
      */
     @Override
     public Mongo mongo() throws Exception {

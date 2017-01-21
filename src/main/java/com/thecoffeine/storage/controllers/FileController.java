@@ -42,7 +42,7 @@ public class FileController {
     /**
      * Get list of files per page.
      *
-     * @return
+     * @return List of files.
      */
     @RequestMapping( method = RequestMethod.GET )
     public List<File> listAction() {

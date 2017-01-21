@@ -28,7 +28,7 @@ public abstract class FileUtil {
      *
      * @return File.
      */
-    public static File gridFSDBFileToFile( GridFSFile file ) {
+    public static File gridFsDbFileToFile( GridFSFile file ) {
         return  new File(
             "" + file.getId(),
             file.getFilename(),
