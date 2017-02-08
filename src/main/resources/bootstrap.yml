@@ -1,0 +1,16 @@
+info:
+  component: Storage service
+
+spring:
+  application:
+    name: storage
+  cloud:
+    config:
+      uri: ${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@config:8888}
+
+---
+spring:
+  profiles: tests
+
+#- Eureka client -#
+eureka.client.enabled: false
