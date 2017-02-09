@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
      * @return Created file.
      */
     @Override
-    public File create( MultipartFile file ) throws IOException {
+    public File create( final MultipartFile file ) throws IOException {
         //- Store file -//
         return FileUtil.gridFsDbFileToFile(
             this.gridFsTemplate.store(

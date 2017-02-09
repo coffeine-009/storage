@@ -21,6 +21,8 @@ import java.time.OffsetDateTime;
  */
 public class File implements Serializable {
 
+
+
     /**
      * Id of file.
      */

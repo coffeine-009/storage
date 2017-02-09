@@ -61,9 +61,9 @@ public class FileController {
     @ResponseBody
     public File createAction(
         @RequestParam( "file" )
-        MultipartFile file,
+        final MultipartFile file,
 
-        HttpServletResponse response
+        final HttpServletResponse response
     ) {
         try {
             //- Set successful HTTP status -//
@@ -90,9 +90,9 @@ public class FileController {
     @ResponseBody
     public byte[] readAction(
         @PathVariable( "name" )
-        String name,
+        final String name,
 
-        HttpServletResponse response
+        final HttpServletResponse response
     ) {
         try {
             //- Search of file -//
@@ -126,9 +126,9 @@ public class FileController {
     @RequestMapping( path = "/{name:[\\w\\.\\_\\-]+}", method = RequestMethod.DELETE )
     public void deleteAction(
         @PathVariable( "name" )
-        String name,
+        final String name,
 
-        HttpServletResponse response
+        final HttpServletResponse response
     ) {
         try {
             //- Delete file -//
@@ -148,9 +148,9 @@ public class FileController {
     @RequestMapping( path = "/{id:\\w+}", method = RequestMethod.DELETE )
     public void deleteAction(
         @PathVariable( "id" )
-        Object id,
+        final Object id,
 
-        HttpServletResponse response
+        final HttpServletResponse response
     ) {
         try {
             //- Delete file -//
