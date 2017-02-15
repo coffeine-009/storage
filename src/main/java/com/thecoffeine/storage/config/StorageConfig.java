@@ -35,27 +35,27 @@ public class StorageConfig extends AbstractMongoConfiguration {
     /**
      * Host of storage.
      */
-    private String host = "localhost";
+    private final String host;
 
     /**
      * Storage port.
      */
-    private int port = 27017;
+    private final int port;
 
     /**
      * Database name.
      */
-    private String database;
+    private final String database;
 
     /**
      * Username.
      */
-    private String username;
+    private final String username;
 
     /**
      * Password.
      */
-    private char[] password;
+    private final char[] password;
 
 
     /**
@@ -99,7 +99,10 @@ public class StorageConfig extends AbstractMongoConfiguration {
      */
     @Bean
     public GridFsTemplate gridFsTemplate() throws Exception {
-        return new GridFsTemplate( this.mongoDbFactory(), this.mappingMongoConverter() );
+        return new GridFsTemplate(
+            this.mongoDbFactory(),
+            this.mappingMongoConverter()
+        );
     }
 
     /**
@@ -118,11 +121,9 @@ public class StorageConfig extends AbstractMongoConfiguration {
      * {@link Mongo} instance to the {@link ApplicationContext}.
      *
      * @return Mongo client.
-     *
-     * @throws Exception    Cannot create {@link GridFsTemplate}
      */
     @Override
-    public Mongo mongo() throws Exception {
+    public Mongo mongo() {
         return new MongoClient(
             new ServerAddress(
                 this.host,

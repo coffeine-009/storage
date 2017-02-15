@@ -9,6 +9,9 @@
 package com.thecoffeine.storage.controllers;
 
 import com.thecoffeine.storage.AbstractTests;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 /**
  * Abstract class for controller's tests.
@@ -16,5 +19,11 @@ import com.thecoffeine.storage.AbstractTests;
  * @version 1.0
  */
 public abstract class AbstractRestControllerTests extends AbstractTests {
+
+    public static RequestPostProcessor security() {
+        return SecurityMockMvcRequestPostProcessors.securityContext(
+            SecurityContextHolder.getContext()
+        );
+    }
 
 }
