@@ -8,7 +8,6 @@
 
 package com.thecoffeine.storage.controllers;
 
-import com.thecoffeine.storage.AbstractTests;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @version 1.0
  * @see FileController
  */
-public class FileControllerFunctionalTests extends AbstractTests {
+public class FileControllerFunctionalTests extends AbstractRestControllerTests {
 
     @Autowired
     private GridFsTemplate gridFsTemplate;
@@ -55,7 +54,8 @@ public class FileControllerFunctionalTests extends AbstractTests {
      * @throws IOException  Cannot read/store file.
      */
     @Before
-    public void setUp() throws IOException {
+    public void tearUp() throws IOException {
+
         try (
             InputStream inputStream = new FileInputStream(
                 "src/test/java/resources/MozartPianoSonata.xml"

@@ -1,0 +1,12 @@
+#- Storage params -#
+spring:
+  profiles: tests
+  data:
+    mongodb:
+      database: storage
+      host: localhost
+      port: 17017
+      username: storage
+      password: storage
+
+eureka.client.enabled: false
