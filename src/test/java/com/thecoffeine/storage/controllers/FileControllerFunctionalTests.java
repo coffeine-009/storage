@@ -8,6 +8,7 @@
 
 package com.thecoffeine.storage.controllers;
 
+import com.thecoffeine.storage.utils.WithMockSecurityUser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,12 +99,14 @@ public class FileControllerFunctionalTests extends AbstractRestControllerTests {
      *
      * @throws Exception    General exception.
      */
+    @WithMockSecurityUser
     @Test
     public void testListActionSuccess() throws Exception {
         //- Performing -//
         this.mockMvc.perform(
             get( "/files" )
                 .accept( MediaType.parseMediaType("application/json;charset=UTF-8"))
+                .with( security() )
         )
             .andExpect( status().isOk() )
             .andExpect( content().contentType("application/json;charset=UTF-8") )
@@ -142,12 +145,14 @@ public class FileControllerFunctionalTests extends AbstractRestControllerTests {
      *
      * @throws Exception    General exception.
      */
+    @WithMockSecurityUser
     @Test
     public void testListActionFailure() throws Exception {
         //- Performing -//
         this.mockMvc.perform(
             get( "/files" )
                 .accept( MediaType.parseMediaType("application/xml;charset=UTF-8"))
+                .with( security() )
         )
             .andExpect( status().isNotAcceptable() )
             .andDo( document( "list-files-failure" ) );
@@ -158,12 +163,14 @@ public class FileControllerFunctionalTests extends AbstractRestControllerTests {
      *
      * @throws Exception    General exception.
      */
+    @WithMockSecurityUser
     @Test
     public void testFindActionSuccess() throws Exception {
         //- Performing -//
         this.mockMvc.perform(
             get( "/files/MozartPianoSonata.xml" )
                 .accept( MediaType.parseMediaType("application/xml"))
+                .with( security() )
         )
             .andExpect( status().isOk() )
             .andExpect( content().contentType("application/xml") )
@@ -176,12 +183,14 @@ public class FileControllerFunctionalTests extends AbstractRestControllerTests {
      *
      * @throws Exception    General exception.
      */
+    @WithMockSecurityUser
     @Test
     public void testFindActionFailure() throws Exception {
         //- Performing -//
         this.mockMvc.perform(
             get( "/files/MozartSonata.xml" )
                 .accept( MediaType.parseMediaType("application/xml"))
+                .with( security() )
         )
             .andExpect( status().isNotFound() )
             .andDo( document( "file-failure-not-found" ) );
@@ -192,6 +201,7 @@ public class FileControllerFunctionalTests extends AbstractRestControllerTests {
      *
      * @throws Exception    General exception.
      */
+    @WithMockSecurityUser
     @Test
     public void testCreateActionSuccess() throws Exception {
         //- Mock data -//
@@ -208,6 +218,7 @@ public class FileControllerFunctionalTests extends AbstractRestControllerTests {
             fileUpload( "/files" )
                 .file(file)
                 .accept( MediaType.parseMediaType( "application/json;charset=UTF-8" ) )
+                .with( security() )
         )
             .andExpect( status().isCreated() )
             .andExpect( content().contentType( "application/json;charset=UTF-8" ) )
@@ -255,11 +266,13 @@ public class FileControllerFunctionalTests extends AbstractRestControllerTests {
      *
      * @throws Exception    General exception.
      */
+    @WithMockSecurityUser
     @Test
     public void testDeleteActionSuccess() throws Exception {
         //- Performing -//
         this.mockMvc.perform(
             delete( "/files/Mozart.xml" )
+                .with( security() )
         )
             .andExpect( status().isOk() )
             .andDo( document( "file-delete-success" ) );
@@ -270,11 +283,13 @@ public class FileControllerFunctionalTests extends AbstractRestControllerTests {
      *
      * @throws Exception    General exception.
      */
+    @WithMockSecurityUser
     @Test
     public void testDeleteActionFailure() throws Exception {
         //- Performing -//
         this.mockMvc.perform(
             delete( "/files/MozartSong.xml" )
+                .with( security() )
         )
             .andExpect( status().isOk() )
             .andDo( document( "file-delete-failure" ) );

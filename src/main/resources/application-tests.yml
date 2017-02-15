@@ -9,4 +9,14 @@ spring:
       username: storage
       password: storage
 
+security:
+  user:
+    name: Unit_Test
+    password: password
+    role: POET
+  oauth2:
+    client:
+      client-id: developer
+      client-secret: develoepr32
+
 eureka.client.enabled: false
