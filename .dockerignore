@@ -1,0 +1,2 @@
+#- Ignore SNAPSHOT jars -#
+build/libs/storage-*-SNAPSHOT.jar

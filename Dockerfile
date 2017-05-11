@@ -20,4 +20,4 @@ EXPOSE 8080
 CMD [ "java", "-jar", "/opt/storage/storage.jar" ]
 
 #- Add app jar -#
-ADD ./build/libs/storage-0.0.1-SNAPSHOT.jar /opt/storage/storage.jar
+ADD ./build/libs/storage-*.jar /opt/storage/storage.jar

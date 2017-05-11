@@ -1,6 +1,8 @@
 Storage
 ====================================
 [![Build Status](https://travis-ci.org/coffeine-009/storage.svg?branch=master)](https://travis-ci.org/coffeine-009/storage)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e19357a5dc4c448d9ff7f0dff85382cb)](https://www.codacy.com/app/vitaliyacm/storage?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=coffeine-009/storage&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/coffeine-009/storage/branch/master/graph/badge.svg)](https://codecov.io/gh/coffeine-009/storage)
 
 File storage. Store large files.
 
